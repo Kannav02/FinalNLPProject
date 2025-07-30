@@ -14,4 +14,6 @@ dependencies = [
     "torch",
     "tqdm",
     "jupyter",
+    "kagglehub",
+    "nltk"
 ]

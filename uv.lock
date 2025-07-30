@@ -391,6 +391,18 @@ wheels = [
 ]
 
 [[package]]
+name = "click"
+version = "8.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/60/6c/8ca2efa64cf75a977a0d7fac081354553ebe483345c734fb6b6515d96bbc/click-8.2.1.tar.gz", hash = "sha256:27c491cc05d968d271d5a1db13e3b5a184636d9d930f148c50b038f0d0646202", size = 286342, upload-time = "2025-05-20T23:19:49.832Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/85/32/10bb5764d90a8eee674e9dc6f4db6a0ab47c8c4d0d83c27f7c39ac415a4d/click-8.2.1-py3-none-any.whl", hash = "sha256:61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b", size = 102215, upload-time = "2025-05-20T23:19:47.796Z" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1338,6 +1350,21 @@ wheels = [
 ]
 
 [[package]]
+name = "kagglehub"
+version = "0.3.12"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "pyyaml" },
+    { name = "requests" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ee/75/c48635ebfb8977945e1a3bf19ec78fba7e3c67b0e808eb633eb9500602ca/kagglehub-0.3.12.tar.gz", hash = "sha256:45e75854630a30605b794eb786b3757beccbbea1acca71600642f67b60e0d7bf", size = 112292, upload-time = "2025-04-23T23:04:57.077Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/49/bf/c2a24567bb6bd80c1fe7cb2ed1a332666476f69c313256aff96094bef93e/kagglehub-0.3.12-py3-none-any.whl", hash = "sha256:6eeb7c5c8e1f25a28e9b26d3d8ed0c24a4a32f763ea5de6e1b3aabba442f2a26", size = 67996, upload-time = "2025-04-23T23:04:55.694Z" },
+]
+
+[[package]]
 name = "kiwisolver"
 version = "1.4.8"
 source = { registry = "https://pypi.org/simple" }
@@ -1794,7 +1821,9 @@ source = { virtual = "." }
 dependencies = [
     { name = "datasets" },
     { name = "jupyter" },
+    { name = "kagglehub" },
     { name = "matplotlib" },
+    { name = "nltk" },
     { name = "pandas" },
     { name = "scikit-learn" },
     { name = "seaborn" },
@@ -1807,13 +1836,30 @@ dependencies = [
 requires-dist = [
     { name = "datasets" },
     { name = "jupyter" },
+    { name = "kagglehub" },
     { name = "matplotlib" },
+    { name = "nltk" },
     { name = "pandas" },
     { name = "scikit-learn" },
     { name = "seaborn" },
     { name = "torch" },
     { name = "tqdm" },
     { name = "transformers" },
+]
+
+[[package]]
+name = "nltk"
+version = "3.9.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "joblib" },
+    { name = "regex" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3c/87/db8be88ad32c2d042420b6fd9ffd4a149f9a0d7f0e86b3f543be2eeeedd2/nltk-3.9.1.tar.gz", hash = "sha256:87d127bd3de4bd89a4f81265e5fa59cb1b199b27440175370f7417d2bc7ae868", size = 2904691, upload-time = "2024-08-18T19:48:37.769Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/66/7d9e26593edda06e8cb531874633f7c2372279c3b0f46235539fe546df8b/nltk-3.9.1-py3-none-any.whl", hash = "sha256:4fa26829c5b00715afe3061398a8989dc643b92ce7dd93fb4585a70930d168a1", size = 1505442, upload-time = "2024-08-18T19:48:21.909Z" },
 ]
 
 [[package]]
