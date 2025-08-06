@@ -1,6 +1,10 @@
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import numpy as np
 
+# this is the file that I have made to have modular functions for evaluations
+
+# evaluate model performance using standard classification metrics
+# I have chosen accuracy, f1_score, precision, and recall as the metrics to evaluate the model
 def evaluate_model(y_test, y_pred):
     """
     Evaluate a model's performance using standard classification metrics.
@@ -26,6 +30,8 @@ def evaluate_model(y_test, y_pred):
     
     return metrics
 
+
+# I wanted to have a hugging face trainer compatible function to compute metrics
 def compute_metrics_for_trainer(eval_pred):
     """
     Compute metrics function for Hugging Face Trainer.

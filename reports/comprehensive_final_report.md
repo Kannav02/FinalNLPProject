@@ -1,8 +1,13 @@
-# Comprehensive Final Report: AI-Generated Text Classification
+# Final Report: AI-Generated Text Classification
+
+**SEA 820 NLP Final Project**
+**Name :** Kannav Sethi
+**Course:** Final-Year Undergraduate NLP  
 
 ## Executive Summary
 
-This report presents a comprehensive analysis of developing machine learning models to classify AI-generated versus human-generated text. While achieving high performance metrics (99.97% accuracy), our investigation reveals critical overfitting issues and concerning classification patterns that highlight the complexity of this task and its ethical implications.
+This report presents a comprehensive analysis of developing machine learning models to classify AI-generated versus human-generated text. While achieving high performance metrics (99.97% accuracy), 
+My investigation reveals critical overfitting issues and concerning classification patterns that highlight the complexity of this task and its ethical implications.
 
 ---
 
@@ -10,7 +15,8 @@ This report presents a comprehensive analysis of developing machine learning mod
 
 ### 1.1 Objective
 
-The primary goal was to develop a robust classifier capable of distinguishing between AI-generated and human-generated text. This task has become increasingly important as AI text generation tools become more sophisticated and widespread.
+The primary goal was to develop a robust classifier capable of distinguishing between AI-generated and human-generated text. 
+This task has become increasingly important as AI text generation tools become more sophisticated and widespread.
 
 ### 1.2 Dataset Overview
 
@@ -19,23 +25,16 @@ The primary goal was to develop a robust classifier capable of distinguishing be
 - **Distribution**: Binary classification (AI-generated vs Human-generated)
 - **Features**: Raw text content with binary labels
 
-### 1.3 Research Questions
-
-1. Can traditional machine learning models effectively distinguish AI from human text?
-2. How does fine-tuning transformer models improve classification performance?
-3. What are the failure modes and limitations of these approaches?
-4. What ethical considerations arise from deploying such systems?
-
 ---
 
 ## 2. Methodology
 
 ### 2.1 Experimental Design
 
-We implemented a three-tier approach to model development:
+I had implemented a three-tier approach to model development:
 
-1. **Baseline Traditional Models**: Logistic Regression and Support Vector Machine
-2. **Advanced Deep Learning**: Fine-tuned DistilBERT transformer model
+1. **Baseline Traditional Models**: Logistic Regression and Support Vector Machine, I didn't want to use Naive Bayes Model, just because the dataset is too much to go about. 
+2. **Advanced Deep Learning**: Fine-tuned DistilBERT transformer model, specifically `distillbert-base-uncased`
 3. **Error Analysis**: Systematic investigation of misclassification patterns
 
 ### 2.2 Data Preprocessing
@@ -62,8 +61,6 @@ We implemented a three-tier approach to model development:
 #### 2.3.1 Baseline Models
 
 1. **Logistic Regression**
-
-   - L2 regularization
    - Maximum iterations: 1000
    - Default scikit-learn parameters
 
@@ -101,9 +98,13 @@ We implemented a three-tier approach to model development:
 | SVM                         | 0.9988     | 0.9984     | 0.9996     | 0.9972     |
 | **DistilBERT (Fine-tuned)** | **0.9997** | **0.9996** | **0.9996** | **0.9997** |
 
+
+As can be seen from the evaluation, I saw that DistilBERT was better than all of those.
+
 ### 3.2 Performance Interpretation
 
-The fine-tuned DistilBERT model achieved state-of-the-art performance metrics, showing marginal but consistent improvements over traditional baseline models. However, these impressive numbers mask significant underlying issues.
+The fine-tuned DistilBERT model achieved state-of-the-art performance metrics, showing marginal but consistent improvements over traditional baseline models. 
+However, I did find one major issue, which was overfitting to the dataset.
 
 ---
 
@@ -111,7 +112,9 @@ The fine-tuned DistilBERT model achieved state-of-the-art performance metrics, s
 
 ### 4.1 Classification Pattern Investigation
 
-Our systematic error analysis revealed concerning patterns that contradict the high performance metrics:
+So I made a file called as `misclassification_analysis.py`, whose task was to take the model, give me predictions based on several outlier cases
+
+I chose some test cases, the reason for choosing such ones is that it was designed keeping in mind to test whether the model learned genuine linguistic differences or merely memorized superficial statistical patterns
 
 #### 4.1.1 Short Text Bias
 
@@ -121,7 +124,8 @@ Our systematic error analysis revealed concerning patterns that contradict the h
 - 'I agree.' → AI-generated (confidence: 1.000)
 - 'Thanks!' → AI-generated (confidence: 1.000)
 
-**Analysis:** The model consistently misclassifies short, simple human expressions as AI-generated, suggesting it has learned to associate brevity with artificial generation.
+**Analysis:** 
+What I discovered was that the model consistently misclassifies short, simple human expressions as AI-generated, suggesting it has learned to associate brevity with artificial generation, again this entails to overfitting of the model.
 
 #### 4.1.2 False Positives: Formal Language Bias
 
@@ -137,6 +141,8 @@ Our systematic error analysis revealed concerning patterns that contradict the h
 - Professional communication
 - Non-native speakers who may use more formal constructions
 
+I think normally this shouldn't happen, but since it overfit, its treating every other line as AI-Generated
+
 #### 4.1.3 False Negatives: Informal Language Misclassification
 
 **Test Cases:**
@@ -145,11 +151,10 @@ Our systematic error analysis revealed concerning patterns that contradict the h
 - 'Ugh, don't even get me started on that topic' → AI-generated (confidence: 1.000)
 - 'My bad! Totally forgot about that meeting yesterday.' → AI-generated (confidence: 0.961)
 
-**Analysis:** Paradoxically, informal, colloquial human language is also classified as AI-generated, indicating the model has learned spurious correlations rather than genuine linguistic differences.
+**Analysis:** informal human language is also classified as AI-generated, indicating the model has learned bad correlations rather than genuine linguistic differences.
 
 ### 4.2 Root Cause Analysis: Overfitting
 
-#### 4.2.1 Evidence of Overfitting
 
 1. **Extreme Confidence Scores**: Most predictions show confidence levels of 0.998-1.000, indicating overconfident predictions
 2. **Systematic Misclassification**: The model consistently misclassifies diverse text types, suggesting it learned dataset-specific patterns rather than generalizable features
@@ -157,96 +162,45 @@ Our systematic error analysis revealed concerning patterns that contradict the h
 
 #### 4.2.2 Potential Causes
 
-1. **Dataset Bias**: The training data may contain systematic differences in:
+1. **Dataset Bias**: The training data contained the following differences, as observed in the EDA
 
    - Text length distributions
-   - Topic domains
-   - Writing styles
-   - Generation contexts
+   - Topic domains distribution, I had more AI-generated texts rather than the human generated texts
 
-2. **Insufficient Regularization**: Despite using weight decay (0.01), the model may need stronger regularization techniques
 
-3. **Limited Training Diversity**: The model may have memorized training patterns rather than learning transferable linguistic features
-
-### 4.3 Failure Mode Categories
-
-#### 4.3.1 Length-Based Discrimination
-
-- **Pattern**: Short texts (< 10 words) consistently classified as AI-generated
-- **Impact**: Discriminates against concise communication styles
-- **Hypothesis**: Training data may have contained more verbose human samples
-
-#### 4.3.2 Formality Bias
-
-- **Pattern**: Academic/professional language flagged as AI-generated
-- **Impact**: Penalizes educated or professional communication
-- **Hypothesis**: AI training samples may have been more formal in the dataset
-
-#### 4.3.3 Stylistic Overgeneralization
-
-- **Pattern**: Model fails to recognize authentic human informal expression
-- **Impact**: Misses genuine human creativity and personality
-- **Hypothesis**: Model learned superficial statistical patterns rather than semantic understanding
+2. **Limited Training Diversity**: The model has memorized training patterns rather than learning transferable linguistic features, as can be seen, the overfitting was present there
 
 ---
 
 ## 5. Ethical Considerations and Societal Impact
+
+When we talk about ethical considerations, I believe that a lot of factors are involved in it.
 
 ### 5.1 Stakeholder Analysis
 
 #### 5.1.1 Potential Beneficiaries
 
 1. **Educational Institutions**: Detecting academic dishonesty
-2. **Content Platforms**: Identifying automated content generation
-3. **Publishers**: Ensuring content authenticity
-4. **Researchers**: Understanding AI text generation capabilities
+2. **Publishers**: Ensuring content authenticity
+3. **Researchers**: Understanding AI text generation capabilities
 
 #### 5.1.2 Potentially Harmed Groups
 
 1. **Non-Native English Speakers**: Formal language constructions may trigger false positives
 2. **Academic Writers**: Professional writing styles unfairly flagged
-3. **Neurodivergent Individuals**: Atypical communication patterns may be misclassified
-4. **Professional Communicators**: Business language may be incorrectly identified
+3. **Professional Communicators**: Business language may be incorrectly identified
 
 ### 5.2 Bias and Discrimination Concerns
 
-#### 5.2.1 Linguistic Discrimination
+Through my analysis, I've identified several concerning patterns of bias that emerged from the model's training process. The linguistic discrimination I observed is particularly troubling because the model penalizes both formal and informal communication styles, effectively creating an unrealistic narrow definition of what constitutes "acceptable" human language. 
 
-- **Issue**: The model penalizes both formal and informal communication styles
-- **Impact**: Creates a narrow definition of "acceptable" human language
-- **Consequence**: May discriminate against diverse communication styles
+The cultural bias present in the system stems from the likelihood that the training data reflects specific cultural and linguistic contexts. What concerns me most is that this limitation means the model may not generalize effectively to global English varieties, potentially creating systemic bias against non-traditional communication patterns. This could unfairly penalize speakers who use different rhetorical structures, cultural references, or linguistic patterns that are perfectly natural in their contexts but differ from the dominant patterns in the training data.
 
-#### 5.2.2 Cultural Bias
+Perhaps most concerning from an educational perspective is the model's tendency to flag academic language as AI-generated. This educational bias could have far-reaching consequences, potentially discouraging students from developing sophisticated writing skills and harming the fairness of educational assessments.I am a student as well, If I was to encounter such a case where my personal written content was classified as AI-generated, it would discourage me from using proper and correct lexical sound grammar.
 
-- **Issue**: Training data likely reflects specific cultural and linguistic contexts
-- **Impact**: May not generalize to global English varieties
-- **Consequence**: Systemic bias against non-Western communication patterns
+### 5.3 Privacy and Surveillance Concerns
 
-#### 5.2.3 Educational Bias
-
-- **Issue**: Academic language consistently flagged as AI-generated
-- **Impact**: May discourage sophisticated writing
-- **Consequence**: Could harm educational assessment fairness
-
-### 5.3 Deployment Risks
-
-#### 5.3.1 False Accusation Scenarios
-
-1. **Academic Settings**: Students falsely accused of using AI assistance
-2. **Professional Contexts**: Employees questioned about authentic work
-3. **Creative Industries**: Artists/writers facing authenticity challenges
-
-#### 5.3.2 Systemic Amplification
-
-- **Risk**: Biased systems may reinforce existing inequalities
-- **Mechanism**: Discriminatory patterns become institutionalized
-- **Solution**: Requires careful bias testing and mitigation
-
-### 5.4 Privacy and Surveillance Concerns
-
-- **Text Analysis**: Systematic monitoring of written communication
-- **Behavioral Profiling**: Potential for identifying individual writing patterns
-- **Chilling Effect**: May discourage authentic expression
+My research has uncovered significant privacy implications that extend beyond the immediate classification task. The systematic analysis of written communication that these models enable raises serious concerns about surveillance and behavioral monitoring. What particularly troubles me is the potential for these systems to develop behavioral profiling capabilities, where individual writing patterns could be identified and tracked across different platforms and contexts.
 
 ---
 
@@ -266,138 +220,33 @@ Our systematic error analysis revealed concerning patterns that contradict the h
 - **Cause**: Test set may share biases with training data
 - **Solution**: Need for more diverse, adversarial evaluation sets
 
-#### 6.1.3 Feature Learning
-
-- **Problem**: Model may rely on superficial statistical patterns
-- **Evidence**: Inconsistent classification of similar text types
-- **Need**: Better understanding of learned representations
-
 ### 6.2 Recommended Improvements
 
-#### 6.2.1 Technical Enhancements
+Based on my comprehensive analysis of the model's failures, I believe several technical enhancements could address the overfitting issues I observed. Advanced regularization techniques represent the most immediate opportunity for improvement, particularly through implementing dropout layers in the classification head, apart from all of this, I think having a balanced dataset and using LoRa Adapaters would be much better in this case, rather than fine-tuning the entire model. These techniques could help combat the extreme confidence scores and rigid decision boundaries that characterize the current model's failures.
 
-1. **Advanced Regularization**:
+The training strategy itself also needs refinement, particularly through curriculum learning approaches that gradually expose the model to increasingly complex examples, domain adaptation techniques that could improve cross-domain generalization, and more sophisticated cross-validation with stratified sampling to ensure robust evaluation.
 
-   - Dropout layers in classification head
-   - Label smoothing
-   - Mixup or CutMix data augmentation
-
-2. **Architecture Modifications**:
-
-   - Ensemble methods
-   - Multi-task learning
-   - Adversarial training
-
-3. **Training Strategy**:
-   - Curriculum learning
-   - Domain adaptation techniques
-   - Cross-validation with stratified sampling
-
-#### 6.2.2 Data Quality Improvements
-
-1. **Dataset Diversification**:
-
-   - Multiple text domains
-   - Various writing styles
-   - Different AI generation models
-
-2. **Bias Mitigation**:
-   - Balanced representation across demographics
-   - Multiple human annotators
-   - Adversarial examples
-
-#### 6.2.3 Evaluation Framework
-
-1. **Robust Testing**:
-
-   - Out-of-domain evaluation
-   - Adversarial test sets
-   - Human-in-the-loop validation
-
-2. **Fairness Metrics**:
-   - Demographic parity
-   - Equalized odds
-   - Individual fairness measures
+The data quality improvements I would prioritize focus on addressing the systematic biases I identified in the training process. Dataset diversification is crucial, requiring representation across multiple text domains, various writing styles, and content generated by different AI models to prevent the narrow pattern memorization I observed. Equally important is bias mitigation through balanced representation across demographic groups.
 
 ### 6.3 Alternative Approaches
 
-#### 6.3.1 Ensemble Methods
+Given the fundamental limitations I've identified in the current approach, I believe exploring alternative methodologies could offer more robust solutions to AI text detection. Ensemble methods represent one particularly promising direction, where combining multiple model types could help reduce the individual model biases that were not good for my current implementation. By aggregating predictions from diverse architectures—perhaps combining transformer-based models with traditional statistical approaches, I could achieve improved robustness and reduce the likelihood of systematic failures across the entire system.
 
-- Combine multiple model types
-- Reduce individual model biases
-- Improve robustness
-
-#### 6.3.2 Human-AI Collaboration
-
-- Human oversight for edge cases
-- Confidence-based routing
-- Explanation-driven decisions
-
-#### 6.3.3 Unsupervised Detection
-
-- Anomaly detection approaches
-- Clustering-based methods
-- Statistical deviation analysis
+LoRA (Low-Rank Adaptation) fine-tuning offers another compelling alternative that directly addresses the overconfidence issues I observed through parameter-efficient adaptation. Rather than relying on full model fine-tuning or static pre-trained models, LoRA would enable the targeted adaptation of specific model layers while preserving the original model's general capabilities. This approach could incorporate domain-specific fine-tuning that adapts models to particular writing styles or contexts, multi-task learning that simultaneously trains on detection and related tasks to improve generalization, and adaptive learning rates that allow the model to adjust its confidence based on input characteristics. LoRA's efficiency makes it practical to maintain multiple specialized variants for different domains while requiring significantly fewer computational resources than traditional fine-tuning approaches.
 
 ---
 
-## 7. Recommendations and Best Practices
+## 7. My Recommendations 
 
-### 7.1 For Researchers
 
-1. **Comprehensive Evaluation**: Test models on diverse, adversarial examples
-2. **Bias Assessment**: Systematic evaluation across demographic groups
-3. **Transparency**: Report failure modes and limitations clearly
-4. **Reproducibility**: Share code, data, and detailed methodologies
-
-### 7.2 For Practitioners
-
-1. **Cautious Deployment**: Implement human oversight systems
-2. **Continuous Monitoring**: Track performance across user groups
-3. **Feedback Loops**: Collect and analyze misclassification patterns
-4. **Ethical Review**: Regular assessment of societal impact
-
-### 7.3 For Policymakers
-
-1. **Regulation Framework**: Develop guidelines for AI detection systems
-2. **Audit Requirements**: Mandate bias testing and reporting
-3. **Appeal Processes**: Establish mechanisms for challenging decisions
-4. **Public Awareness**: Educate stakeholders about limitations
+My experience with this project has convinced me that normal people working on AI detection systems should change to approach evaluation and validation. 
+Comprehensive evaluation should become the norm, requiring systematic testing on diverse, adversarial examples that go well beyond standard test sets. I think one of the thing that became evident is that there should be a mandatory bias assessment across demographic groups, as the patterns I discovered suggest that many systems could have hidden biases that only become apparent through targeted analysis.
 
 ---
 
 ## 8. Conclusion
 
-This comprehensive analysis reveals a critical disconnect between quantitative performance metrics and real-world applicability in AI text classification. While our fine-tuned DistilBERT model achieved impressive accuracy scores (99.97%), systematic error analysis exposed severe overfitting issues and concerning bias patterns.
-
-### 8.1 Key Findings
-
-1. **Performance Paradox**: High metrics mask fundamental classification failures
-2. **Systematic Bias**: Model discriminates against both formal and informal language
-3. **Overfitting Evidence**: Extreme confidence scores and contradictory patterns
-4. **Ethical Concerns**: Significant potential for unfair discrimination
-
-### 8.2 Critical Insights
-
-The project demonstrates that traditional evaluation metrics are insufficient for assessing AI detection systems. The model's tendency to classify diverse human expressions as AI-generated suggests it learned dataset-specific artifacts rather than genuine linguistic differences between human and AI text.
-
-### 8.3 Broader Implications
-
-This work highlights the urgent need for:
-
-- More sophisticated evaluation frameworks
-- Systematic bias testing in NLP systems
-- Ethical considerations in AI detection deployment
-- Transparent reporting of model limitations
-
-### 8.4 Future Research Directions
-
-1. **Methodological**: Develop better regularization and training techniques
-2. **Evaluative**: Create more robust, diverse test sets
-3. **Ethical**: Establish fairness metrics for AI detection systems
-4. **Practical**: Design human-AI collaborative approaches
-
-The field of AI text detection remains in its early stages, requiring careful consideration of both technical capabilities and societal implications. This analysis serves as a cautionary tale about the importance of comprehensive evaluation beyond traditional metrics and the critical need for ethical considerations in AI system deployment.
+This comprehensive analysis reveals a critical disconnect between quantitative performance metrics and real-world applicability in AI text classification. While my fine-tuned DistilBERT model achieved impressive accuracy scores (99.97%), systematic error analysis exposed severe overfitting issues and concerning bias patterns.
 
 ---
 
@@ -408,14 +257,10 @@ The field of AI text detection remains in its early stages, requiring careful co
 - **Hardware**: GPU-enabled training environment
 - **Software**: PyTorch, Transformers, scikit-learn
 - **Model Checkpoint**: Available at `./models/checkpoint-36543`
-- **Reproducibility**: All code available in project repository
 
 ### B. Additional Resources
 
-- **Notebooks**: `baseline_model.ipynb`, `fine_tuned_model_final.ipynb`
+- **Notebooks**: `baseline_model_final.ipynb`, `fine_tuned_model_final.ipynb`
 - **Analysis Scripts**: `misclassification_analysis.py`, `evaluation_metrics.py`
 - **Data**: AI vs Human Text dataset (487K samples)
 
-### C. Contact and Collaboration
-
-This research is part of an ongoing investigation into AI text detection systems. For questions, collaborations, or access to additional materials, please refer to the project repository.

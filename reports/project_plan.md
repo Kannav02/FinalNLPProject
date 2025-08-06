@@ -1,6 +1,6 @@
 # Project Plan: AI-Generated Text Detection
-**SEA 820 NLP Final Project - Part 1**  
-**Student:** Kannav Sethi  
+**SEA 820 NLP Final Project**  
+**Name:** Kannav Sethi  
 **Course:** Final-Year Undergraduate NLP  
 
 ## Current Status
