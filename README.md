@@ -48,7 +48,7 @@ I am using uv as the package manager and runtime manager as well, so the instruc
    python misclassification_analysis.py
    ```
 
-## 📁 Project Structure
+## Project Structure
 
 I will not include the dataset or the model, as they are pretty heavy files and git wouldn't allow me to upload them.
 
