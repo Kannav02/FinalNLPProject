@@ -41,4 +41,4 @@ This document compares the performance metrics of the fine-tuned classifier agai
 
 The fine-tuned model outperforms both baseline models. The improvements are most significant when compared to the Logistic Regression model, while gains over the SVM model are more modest. Overall, the enhancements reflect a more robust classifier with slightly higher accuracy, F1 score, and recall.
 
-The fine-tuned model benefits from advanced training techniques and additional task-specific data, which help it capture subtle linguistic patterns better than the generic baseline models. This targeted refinement leads to improved parameter tuning and overall performance.
+The fine-tuned model benefits from advanced training techniques and additional task-specific data, which help it capture subtle linguistic patterns better than the generic baseline models.
