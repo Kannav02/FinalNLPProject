@@ -44,7 +44,6 @@ I am using uv as the package manager and runtime manager as well, so the instruc
 
 3. **Run evaluation scripts**:
    ```bash
-   python evaluation_metrics.py
    python misclassification_analysis.py
    ```
 
